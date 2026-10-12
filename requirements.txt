@@ -1,0 +1,9 @@
+# Install a matching PyTorch/torchvision build for your server's CUDA first.
+# weights_only/safe_globals checkpoint loading requires PyTorch >= 2.6.
+torch>=2.6
+torchvision>=0.21
+numpy>=1.24,<3
+Pillow>=10.1
+opencv-python>=4.10
+tqdm>=4.67
+matplotlib>=3.7.5

@@ -1,0 +1,2 @@
+# Only needed for Grad-CAM visualization.
+grad-cam>=1.5.0
