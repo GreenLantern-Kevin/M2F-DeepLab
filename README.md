@@ -1,5 +1,7 @@
 # M2F-DeepLab
 
+**简体中文** | [English](README_EN.md)
+
 RGB 与三通道地形影像的双流滑坡语义分割模型，基于 DeepLabV3+。
 
 ## 模型
