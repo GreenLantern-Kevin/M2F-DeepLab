@@ -16,11 +16,15 @@ def load_checkpoint(path, map_location="cpu"):
         raise RuntimeError("Safe checkpoint loading requires a PyTorch version with safe_globals/weights_only support.")
     # Older training logs saved best_score as a NumPy scalar. Allow only these
     # concrete NumPy reconstruction types, not arbitrary checkpoint globals.
-    scalar = np._core.multiarray.scalar if hasattr(np, "_core") else np.core.multiarray.scalar
-    safe_types = [scalar, np.dtype, type(np.dtype("float64")), type(np.dtype("float32"))]
-    # NumPy 2 renamed numpy.core, but historical checkpoints use the old path.
-    if scalar.__module__ != "numpy.core.multiarray":
-        safe_types.append((scalar, "numpy.core.multiarray.scalar"))
+    # Import the submodule explicitly: some NumPy 1.x builds expose _core
+    # as a compatibility package without eagerly importing its children.
+    try:
+        from numpy._core.multiarray import scalar
+    except ImportError:
+        from numpy.core.multiarray import scalar
+    safe_types = [np.dtype, type(np.dtype("float64")), type(np.dtype("float32")),
+                  (scalar, "numpy.core.multiarray.scalar"),
+                  (scalar, "numpy._core.multiarray.scalar")]
     with torch.serialization.safe_globals(safe_types):
         return torch.load(path, map_location=map_location, weights_only=True)
 
